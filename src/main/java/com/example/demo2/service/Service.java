@@ -36,7 +36,7 @@ public class Service {
             index+= value.charAt(j);
             index = index * 31;
         }
-        return Math.abs(index%3);
+        return Math.abs(index%table.getNodes().length);
     }
 
 

@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 import java.util.Optional;
 
 public class Presentation {
-    private int size;
+    private int size = 0;
     public void showPresentation(Stage stage){
 
         Pane pane = new Pane();
@@ -32,9 +32,11 @@ public class Presentation {
         help.getItems().addAll(about);
         Service service = new Service(new Table(10));
         HashtableDrawComponent drawComponent = new HashtableDrawComponent();
-//        drawComponent.setModel(service.getTable());
         clearClick.setOnAction(actionEvent -> {
             pane.getChildren().clear();
+            Table table = new Table();
+            service.setTable(table);
+            drawComponent.setModel(table);
             borderPane.setCenter(pane);
         });
         about.setOnAction(actionEvent -> {
@@ -86,24 +88,53 @@ public class Presentation {
 
             Optional<String> result = dialog.showAndWait();
             result.ifPresent(name -> {
-                service.add(name);
-                pane.getChildren().clear();
-                drawComponent.setModel(drawComponent.getModel());
-                pane.getChildren().add(drawComponent.paintComponent());
-                borderPane.setCenter(pane);
+                if (size == 0 || name.equals("")){
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Size Dialog");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Yehdik ! ");
+                    alert.showAndWait();
+                }
+                else {
+                    service.add(name);
+                    drawComponent.setAdded(true);
+                    drawComponent.setIndex(service.hash(name));
+                    pane.getChildren().clear();
+                    drawComponent.setModel(drawComponent.getModel());
+                    pane.getChildren().add(drawComponent.paintComponent());
+                    borderPane.setCenter(pane);
+                }
 
             });
         });
 
+        Button button = new Button("Delete");
         scene.setOnMouseClicked(event -> {
             if (drawComponent.getDelTest()) {
+
+                button.setLayoutX(150);
+                button.setLayoutY(300);
+                pane.getChildren().add(button);
+            }
+
+        });
+        button.setOnAction(actionEvent -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Remove Node");
+            alert.setHeaderText(null);
+            alert.setContentText("Are you sure you want to remove this node ?" );
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK){
+                drawComponent.setConfirmed(true);
                 service.remove(drawComponent.getDelName());
+                drawComponent.setIndex(service.hash(drawComponent.getDelName()));
                 pane.getChildren().clear();
                 drawComponent.setModel(drawComponent.getModel());
                 pane.getChildren().add(drawComponent.paintComponent());
-                System.out.println("salut : "+drawComponent.getDelName());
+
             }
         });
+
         FileMenu.getItems().addAll(sizeClick,addClick, clearClick);
         menubar.getMenus().addAll(FileMenu,help);
         borderPane.setTop(menubar);
