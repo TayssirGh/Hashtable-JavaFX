@@ -21,6 +21,10 @@ public class HashtableDrawComponent {
     private boolean confirmed = false;
     private Table model = new Table(10);
 
+    public HashtableDrawComponent() {
+
+    }
+
     public void setConfirmed(boolean confirmed) {
         this.confirmed = confirmed;
     }
@@ -33,15 +37,14 @@ public class HashtableDrawComponent {
         return delName;
     }
 
-    public void setModel(Table model) {
-        this.model = model;
-//        Platform.runLater(this::paintComponent);
-    }
-
-
     public Table getModel() {
 
         return model;
+    }
+
+    public void setModel(Table model) {
+        this.model = model;
+//        Platform.runLater(this::paintComponent);
     }
 
     public void setAdded(boolean added) {
@@ -51,11 +54,6 @@ public class HashtableDrawComponent {
     public void setIndex(int index) {
         this.index = index;
     }
-
-    public HashtableDrawComponent() {
-
-    }
-
 
     public Rectangle drawNode(Pane pane, Node n, int nodeX, int nodeY, int caseSize) {
         Rectangle nodeRect = new Rectangle(nodeX, nodeY, caseSize - 20, caseSize - 40);
@@ -214,7 +212,7 @@ public class HashtableDrawComponent {
                 int finalNodeX = nodeX;
                 if (index == i) {
                     Timeline timeline;
-                    if(confirmed){
+                    if (confirmed) {
                         timeline = new Timeline(
 
                                 new KeyFrame(Duration.seconds((j * 0.75)), event ->
@@ -222,8 +220,7 @@ public class HashtableDrawComponent {
 
                         );
                         confirmed = false;
-                    }
-                    else {
+                    } else {
                         timeline = new Timeline(
 
                                 new KeyFrame(Duration.seconds((i + j + 1)), event ->
